@@ -48,4 +48,17 @@ public class TransactionServiceImpl implements TransactionService {
                 .map(transactionMapper::toResponse)
                 .toList();
     }
+    @Override
+    public List<TransactionResponseDTO> getAllTransactions() {
+        return transactionRepository.findAll().stream()
+                .map(transactionMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public TransactionResponseDTO getTransactionById(Long id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Transacción no encontrada"));
+        return transactionMapper.toResponse(transaction);
+    }
 }

@@ -3,6 +3,7 @@ package com.system.bank_manager.controller;
 import com.system.bank_manager.dto.request.AccountRequestDTO;
 import com.system.bank_manager.dto.response.AccountResponseDTO;
 import com.system.bank_manager.service.AccountService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class AccountController {
 
     // Crear cuenta
     @PostMapping
-    public ResponseEntity<AccountResponseDTO> createAccount(@RequestBody AccountRequestDTO request) {
+    public ResponseEntity<AccountResponseDTO> createAccount(@Valid @RequestBody AccountRequestDTO request) {
         return ResponseEntity.ok(accountService.createAccount(request));
     }
 

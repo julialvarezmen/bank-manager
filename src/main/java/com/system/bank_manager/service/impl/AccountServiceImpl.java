@@ -4,9 +4,13 @@ import com.system.bank_manager.dto.request.AccountRequestDTO;
 import com.system.bank_manager.dto.response.AccountResponseDTO;
 import com.system.bank_manager.entity.Account;
 import com.system.bank_manager.entity.Transaction;
+import com.system.bank_manager.entity.User;
+import com.system.bank_manager.exception.DuplicateAccountException;
 import com.system.bank_manager.repository.AccountRepository;
 import com.system.bank_manager.repository.TransactionRepository;
+import com.system.bank_manager.repository.UserRepository;
 import com.system.bank_manager.service.AccountService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,17 +23,29 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
 
-    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository,UserRepository userRepository) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public AccountResponseDTO createAccount(AccountRequestDTO request) {
+        if (accountRepository.existsByAccountNumber(request.accountNumber())) {
+            throw new DuplicateAccountException("Ya existe una cuenta con este número: " + request.accountNumber());
+        }
+
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + request.userId()));
+
+
         Account account = new Account();
-        // Mapea los campos de request a account
-        // account.setCampo(request.getCampo());
+        account.setAccountNumber(request.accountNumber());
+        account.setBalance(request.balance());
+        account.setUser(user);
+
         Account saved = accountRepository.save(account);
         return mapToResponseDTO(saved);
     }
@@ -37,8 +53,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponseDTO updateAccount(Long id, AccountRequestDTO request) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
-        // Actualiza los campos de account con los datos de request
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada con id: " + id));
+
+
+        account.setAccountNumber(request.accountNumber());
+        account.setBalance(request.balance());
+
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + request.userId()));
+        account.setUser(user);
+
         Account updated = accountRepository.save(account);
         return mapToResponseDTO(updated);
     }
@@ -53,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponseDTO getAccountById(Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException(("Cuenta no encontrada con ID: " + id)));
         return mapToResponseDTO(account);
     }
 

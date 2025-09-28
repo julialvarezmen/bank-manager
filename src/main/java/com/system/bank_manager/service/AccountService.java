@@ -15,6 +15,6 @@ public interface AccountService {
     List<AccountResponseDTO> getAllAccounts();
     AccountResponseDTO getAccountById(Long id);
     void deleteAccount(Long id);
-    // ...otros métodos existentes
+
 }
 

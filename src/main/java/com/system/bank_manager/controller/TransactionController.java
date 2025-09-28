@@ -3,6 +3,7 @@ package com.system.bank_manager.controller;
 import com.system.bank_manager.dto.request.TransactionRequestDTO;
 import com.system.bank_manager.dto.response.TransactionResponseDTO;
 import com.system.bank_manager.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -21,7 +22,7 @@ public class TransactionController {
    @PostMapping("/{accountId}")
    public ResponseEntity<TransactionResponseDTO> createTransaction(
        @PathVariable Long accountId,
-       @RequestBody TransactionRequestDTO request
+       @Valid @RequestBody TransactionRequestDTO request
    ) {
        return ResponseEntity.ok(transactionService.createTransaction(accountId, request));
    }

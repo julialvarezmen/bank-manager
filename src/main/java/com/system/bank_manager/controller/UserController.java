@@ -4,6 +4,7 @@ import com.system.bank_manager.dto.request.CreateUserDTO;
 import com.system.bank_manager.dto.request.UpdateUserDTO;
 import com.system.bank_manager.dto.response.UserResponseDTO;
 import com.system.bank_manager.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody CreateUserDTO request) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody CreateUserDTO request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 

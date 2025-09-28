@@ -7,6 +7,7 @@ import com.system.bank_manager.entity.User;
 import com.system.bank_manager.mapper.UserMapper;
 import com.system.bank_manager.repository.UserRepository;
 import com.system.bank_manager.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO updateUser(Long id, UpdateUserDTO request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encotrado con: " + id));
 
         user.setName(request.name());
         user.setEmail(request.email());
@@ -54,14 +55,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encotrado con: " + id));
         return userMapper.toResponse(user);
     }
 
     @Override
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new RuntimeException("User not found with id: " + id);
+            throw new EntityNotFoundException("Usuario no encotrado con: " + id);
         }
         userRepository.deleteById(id);
     }

@@ -4,6 +4,7 @@ import com.system.bank_manager.dto.request.TransactionRequestDTO;
 import com.system.bank_manager.dto.response.TransactionResponseDTO;
 import com.system.bank_manager.entity.Account;
 import com.system.bank_manager.entity.Transaction;
+import com.system.bank_manager.exception.InsufficientFundsException;
 import com.system.bank_manager.mapper.TransactionMapper;
 import com.system.bank_manager.repository.AccountRepository;
 import com.system.bank_manager.repository.TransactionRepository;
@@ -36,6 +37,9 @@ public class TransactionServiceImpl implements TransactionService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada"));
 
+        if ("RETIRO".equals(request.type()) && account.getBalance().compareTo(request.amount()) < 0) {
+        throw new InsufficientFundsException("Saldo insuficiente para realizar el retiro");
+}
         Transaction transaction = transactionMapper.toEntity(request);
         transaction.setAccount(account);
 

@@ -12,11 +12,13 @@ public interface TransactionMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "date", expression = "java(LocalDateTime.now())")
-    @Mapping(target = "type", expression = "java(Transaction.TransactionType.valueOf(dto.type()))")
+
     @Mapping(target = "account", ignore = true)
     Transaction toEntity(TransactionRequestDTO dto);
 
     @Mapping(target = "accountId", source = "account.id")
     TransactionResponseDTO toResponse(Transaction transaction);
+
+
 }
 

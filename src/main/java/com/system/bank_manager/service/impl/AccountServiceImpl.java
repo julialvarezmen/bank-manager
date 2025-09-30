@@ -22,12 +22,10 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
 
     public AccountServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository,UserRepository userRepository) {
         this.accountRepository = accountRepository;
-        this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
     }
 

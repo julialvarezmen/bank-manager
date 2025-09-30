@@ -25,16 +25,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO createUser(CreateUserDTO request) {
-        User user = userMapper.toEntity(request);
-        User savedUser = userRepository.save(user);
-        return userMapper.toResponse(savedUser);
+    public UserResponseDTO createUser(CreateUserDTO dto) {
+        if (userRepository.findByDni(dto.dni()).isPresent()) {
+            throw new IllegalArgumentException("Ya existe un usuario con este DNI");
+        }
+
+        User user = userMapper.toEntity(dto);
+        userRepository.save(user);
+        return userMapper.toResponse(user);
     }
+
 
     @Override
     public UserResponseDTO updateUser(Long id, UpdateUserDTO request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encotrado con: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encotrado con ID: " + id));
 
         user.setName(request.name());
         user.setEmail(request.email());
@@ -55,14 +60,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encotrado con: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encotrado con ID: " + id));
         return userMapper.toResponse(user);
     }
 
     @Override
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("Usuario no encotrado con: " + id);
+            throw new EntityNotFoundException("Usuario no encotrado con ID: " + id);
         }
         userRepository.deleteById(id);
     }

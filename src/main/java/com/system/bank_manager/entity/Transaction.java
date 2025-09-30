@@ -25,7 +25,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionType type; // DEPOSIT or WITHDRAWAL
+    private TransactionType type;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime date;
@@ -40,7 +40,7 @@ public class Transaction {
     }
 
     public enum TransactionType {
-        DEPOSIT,
-        WITHDRAWAL
+        DEPOSITO,
+        DEPOSIT, WITHDRAWAL, RETIRO
     }
 }

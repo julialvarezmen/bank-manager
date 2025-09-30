@@ -35,11 +35,22 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public TransactionResponseDTO createTransaction(Long accountId, TransactionRequestDTO request) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Cuenta no encontrada con ID: " + accountId));
 
-        if ("RETIRO".equals(request.type()) && account.getBalance().compareTo(request.amount()) < 0) {
-        throw new InsufficientFundsException("Saldo insuficiente para realizar el retiro");
-}
+        // Usamos directamente el enum
+        if (request.type() == Transaction.TransactionType.DEPOSIT) {
+            account.setBalance(account.getBalance().add(request.amount()));
+        } else if (request.type() == Transaction.TransactionType.WITHDRAWAL) {
+            if (account.getBalance().compareTo(request.amount()) < 0) {
+                throw new InsufficientFundsException("Saldo insuficiente para realizar el retiro");
+            }
+            account.setBalance(account.getBalance().subtract(request.amount()));
+        } else {
+            throw new IllegalArgumentException("Tipo de transacción no válido: " + request.type());
+        }
+
+        accountRepository.save(account);
+
         Transaction transaction = transactionMapper.toEntity(request);
         transaction.setAccount(account);
 
@@ -62,7 +73,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionResponseDTO getTransactionById(Long id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Transacción no encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException("Transacción no encontrada con ID: " + id));
         return transactionMapper.toResponse(transaction);
     }
 }

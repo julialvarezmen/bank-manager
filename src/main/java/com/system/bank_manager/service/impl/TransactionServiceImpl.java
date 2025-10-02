@@ -1,6 +1,7 @@
 package com.system.bank_manager.service.impl;
 
 import com.system.bank_manager.dto.request.TransactionRequestDTO;
+import com.system.bank_manager.dto.request.TransferRequestDTO;
 import com.system.bank_manager.dto.response.TransactionResponseDTO;
 import com.system.bank_manager.entity.Account;
 import com.system.bank_manager.entity.Transaction;
@@ -13,6 +14,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -55,6 +58,44 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setAccount(account);
 
         return transactionMapper.toResponse(transactionRepository.save(transaction));
+    }
+
+    @Transactional
+    public void transferBetweenAccounts(TransferRequestDTO request) {
+        // Validación inicial
+        if (request.fromAccountId().equals(request.toAccountId())) {
+            throw new IllegalArgumentException("No puedes transferir dinero a la misma cuenta");
+        }
+
+        // Buscar cuentas
+        Account fromAccount = accountRepository.findById(request.fromAccountId())
+                .orElseThrow(() -> new EntityNotFoundException("Cuenta origen no encontrada con ID: " + request.fromAccountId()));
+        Account toAccount = accountRepository.findById(request.toAccountId())
+                .orElseThrow(() -> new EntityNotFoundException("Cuenta destino no encontrada con ID: " + request.toAccountId()));
+
+        // Verificar fondos
+        if (fromAccount.getBalance().compareTo(request.amount()) < 0) {
+            throw new InsufficientFundsException("Saldo insuficiente en la cuenta origen");
+        }
+
+        // Actualizar saldos
+        fromAccount.setBalance(fromAccount.getBalance().subtract(request.amount()));
+        toAccount.setBalance(toAccount.getBalance().add(request.amount()));
+
+        // Registrar transacciones
+        LocalDateTime now = LocalDateTime.now();
+
+        transactionRepository.save(createTransaction(request.amount(), Transaction.TransactionType.WITHDRAWAL, fromAccount, now));
+        transactionRepository.save(createTransaction(request.amount(), Transaction.TransactionType.DEPOSIT, toAccount, now));
+    }
+
+    private Transaction createTransaction(BigDecimal amount, Transaction.TransactionType type, Account account, LocalDateTime date) {
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setType(type);
+        transaction.setAccount(account);
+        transaction.setDate(date);
+        return transaction;
     }
 
     @Override

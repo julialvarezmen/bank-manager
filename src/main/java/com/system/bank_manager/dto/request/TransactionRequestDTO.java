@@ -11,10 +11,8 @@ public record TransactionRequestDTO(
         BigDecimal amount,
 
         @NotNull(message = "El tipo de transacción es obligatorio")
-        Transaction.TransactionType type,
+        Transaction.TransactionType type
 
-        @NotNull(message = "La cuenta es obligatoria")
-        @Positive(message = "El ID de la cuenta debe ser un número positivo")
-        Long accountId
+
 ) {}
 

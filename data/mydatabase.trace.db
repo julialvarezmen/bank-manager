@@ -3392,3 +3392,9 @@ alter table if exists users add constraint UKcllhrww3193rvi9q5xa3wtgsx unique (d
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350)
 	at com.system.bank_manager.BankManagerApplication.main(BankManagerApplication.java:10)
+2025-10-02 12:15:22.120711-05:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "SELECT * FROM TRANSACTIONS \000d\000aACCOUNTS \000d\000a[*]USERS"
+Syntax error in SQL statement "SELECT * FROM TRANSACTIONS \000d\000aACCOUNTS \000d\000a[*]USERS"; SQL statement:
+SELECT * FROM TRANSACTIONS 
+ACCOUNTS 
+USERS [42000-230]

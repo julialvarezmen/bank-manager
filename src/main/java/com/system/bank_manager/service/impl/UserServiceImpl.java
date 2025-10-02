@@ -4,10 +4,12 @@ import com.system.bank_manager.dto.request.CreateUserDTO;
 import com.system.bank_manager.dto.request.UpdateUserDTO;
 import com.system.bank_manager.dto.response.UserResponseDTO;
 import com.system.bank_manager.entity.User;
+import com.system.bank_manager.exception.DuplicateUserException;
 import com.system.bank_manager.mapper.UserMapper;
 import com.system.bank_manager.repository.UserRepository;
 import com.system.bank_manager.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,21 +27,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponseDTO createUser(CreateUserDTO dto) {
+        //  Validar DNI duplicado
         if (userRepository.findByDni(dto.dni()).isPresent()) {
-            throw new IllegalArgumentException("Ya existe un usuario con este DNI");
+            throw new DuplicateUserException("Ya existe un usuario con DNI: " + dto.dni());
         }
 
         User user = userMapper.toEntity(dto);
-        userRepository.save(user);
-        return userMapper.toResponse(user);
+        User savedUser = userRepository.save(user); //
+        return userMapper.toResponse(savedUser);
     }
 
-
     @Override
+    @Transactional //
     public UserResponseDTO updateUser(Long id, UpdateUserDTO request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encotrado con ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
 
         user.setName(request.name());
         user.setEmail(request.email());
@@ -50,6 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -58,16 +63,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponseDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encotrado con ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + id));
         return userMapper.toResponse(user);
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("Usuario no encotrado con ID: " + id);
+            throw new EntityNotFoundException("Usuario no encontrado con ID: " + id);
         }
         userRepository.deleteById(id);
     }

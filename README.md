@@ -5,7 +5,7 @@ El proyecto implementa una arquitectura en capas (Controller, Service, Repositor
 
 ---
 
-## 🚀 Tecnologías usadas
+## Tecnologías usadas
 - Java 17+
 - Spring Boot 3.x
 - Spring Data JPA
@@ -17,31 +17,31 @@ El proyecto implementa una arquitectura en capas (Controller, Service, Repositor
 
 ---
 
-## 📂 Estructura del proyecto
+## Estructura del proyecto
 
 bank-manager
-┣ 📂 src
-┃ ┣ 📂 main
-┃ ┃ ┣ 📂 java/com/system/bank_manager
-┃ ┃ ┃ ┣ 📂 controller # Controladores REST
-┃ ┃ ┃ ┣ 📂 dto # DTOs (Request / Response)
-┃ ┃ ┃ ┣ 📂 entity # Entidades JPA
-┃ ┃ ┃ ┣ 📂 exception # Excepciones personalizadas
-┃ ┃ ┃ ┣ 📂 mapper # MapStruct mappers
-┃ ┃ ┃ ┣ 📂 repository # Repositorios JPA
-┃ ┃ ┃ ┣ 📂 service # Lógica de negocio
-┃ ┃ ┃ ┗ 📄 BankManagerApplication.java
-┃ ┣ 📂 resources
-┃ ┃ ┣ 📄 application.properties
-┃ ┃ ┗ 📄 data.sql / schema.sql
+┣ src
+┃ ┣  main
+┃ ┃ ┣  java/com/system/bank_manager
+┃ ┃ ┃ ┣  controller # Controladores REST
+┃ ┃ ┃ ┣  dto # DTOs (Request / Response)
+┃ ┃ ┃ ┣  entity # Entidades JPA
+┃ ┃ ┃ ┣  exception # Excepciones personalizadas
+┃ ┃ ┃ ┣  mapper # MapStruct mappers
+┃ ┃ ┃ ┣  repository # Repositorios JPA
+┃ ┃ ┃ ┣  service # Lógica de negocio
+┃ ┃ ┃ ┗  BankManagerApplication.java
+┃ ┣  resources
+┃ ┃ ┣  application.properties
+┃ ┃ ┗  data.sql / schema.sql
 ┃
-┣ 📂 test/java/com/system/bank_manager
-┃ ┣ 📂 controller
-┃ ┣ 📂 service
-┃ ┗ 📂 mapper
+┣  test/java/com/system/bank_manager
+┃ ┣  controller
+┃ ┣  service
+┃ ┗  mapper
 ┃
-┣ 📄 build.gradle
-┗ 📄 settings.gradle
+┣  build.gradle
+┗  settings.gradle
 
 
 ---

@@ -51,8 +51,7 @@ class TransactionServiceImplTest {
         Long accountId = 1L;
         TransactionRequestDTO request = new TransactionRequestDTO(
                 new BigDecimal("100.00"),
-                Transaction.TransactionType.DEPOSIT,
-                accountId
+                Transaction.TransactionType.DEPOSIT
         );
 
         Account account = new Account();
@@ -103,8 +102,7 @@ class TransactionServiceImplTest {
         Long accountId = 1L;
         TransactionRequestDTO request = new TransactionRequestDTO(
                 new BigDecimal("600.00"),
-                Transaction.TransactionType.WITHDRAWAL,
-                accountId
+                Transaction.TransactionType.WITHDRAWAL
         );
 
         Account account = new Account();

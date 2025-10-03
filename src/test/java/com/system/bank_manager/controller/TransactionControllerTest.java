@@ -36,8 +36,7 @@ class TransactionControllerDepositTest {
         // PASO 1: Crear request
         TransactionRequestDTO request = new TransactionRequestDTO(
                 new BigDecimal("1000.00"),
-                Transaction.TransactionType.DEPOSIT,
-                1L
+                Transaction.TransactionType.DEPOSIT
         );
 
         // PASO 2: Crear respuesta esperada
@@ -71,8 +70,7 @@ class TransactionControllerDepositTest {
         // PASO 1: Crear request con monto negativo
         TransactionRequestDTO request = new TransactionRequestDTO(
                 new BigDecimal("-100.00"),
-                Transaction.TransactionType.DEPOSIT,
-                1L
+                Transaction.TransactionType.DEPOSIT
         );
 
         // PASO 2: Configurar mock para lanzar excepción
